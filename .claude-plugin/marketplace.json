@@ -4,13 +4,10 @@
     "name": "GeorgiySurkov"
   },
   "description": "Marketplace for the LLM Council plugin.",
-  "metadata": {
-    "pluginRoot": "./plugins"
-  },
   "plugins": [
     {
       "name": "llm-council",
-      "source": "./llm-council",
+      "source": "./plugins/llm-council",
       "description": "5 persona advisors, blind peer review, chairman synthesis; foldered report.",
       "category": "productivity",
       "keywords": ["decision-making", "council", "multi-agent"]
