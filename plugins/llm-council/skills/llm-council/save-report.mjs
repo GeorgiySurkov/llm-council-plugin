@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-// Раскладывает результат workflow `llm-council` в структурированное дерево папок.
-// Это обычный node-скрипт (НЕ workflow-скрипт), поэтому Date/fs здесь доступны.
+// Lays the result of the `llm-council` workflow out into a structured folder tree.
+// This is a plain node script (NOT a workflow script), so Date/fs are available here.
 //
-// Использование:
+// Usage:
 //   node save-report.mjs <result.json> [baseDir]
-// где result.json — JSON, возвращённый воркфлоу:
+// where result.json is the JSON returned by the workflow:
 //   { question, slug, framed, advisors[], reviews[], tally, verdict }
-// baseDir по умолчанию "council" (относительно текущей рабочей папки).
+// baseDir defaults to "council" (relative to the current working directory).
 //
-// Печатает в stdout абсолютный путь созданной папки отчёта.
+// Prints the absolute path of the created report folder to stdout.
 
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
@@ -22,7 +22,7 @@ if (!resultPath) {
 const r = JSON.parse(readFileSync(resultPath, 'utf8'))
 const baseDir = baseDirArg || 'council'
 
-// ── Имя папки: <timestamp>-<slug> ──────────────────────────────────────────
+// ── Folder name: <timestamp>-<slug> ────────────────────────────────────────
 const d = new Date()
 const p = (n) => String(n).padStart(2, '0')
 const ts = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`
@@ -48,31 +48,31 @@ const advisors = Array.isArray(r.advisors) ? r.advisors : []
 const reviews = Array.isArray(r.reviews) ? r.reviews : []
 const v = r.verdict || {}
 
-// ── verdict.md (заголовочный документ) ─────────────────────────────────────
-const verdictMd = `# Вердикт совета
+// ── verdict.md (header document) ───────────────────────────────────────────
+const verdictMd = `# Council verdict
 
 > ${(r.question || '').trim()}
 
-## Где совет согласен
+## Where the Council Agrees
 ${v.agreements || '—'}
 
-## Где совет расходится
+## Where the Council Clashes
 ${v.clashes || '—'}
 
-## Слепые пятна, что поймал совет
+## Blind Spots the Council Caught
 ${v.blindSpots || '—'}
 
-## Рекомендация
+## The Recommendation
 ${v.recommendation || '—'}
 
-## Первое, что сделать
+## The One Thing to Do First
 ${v.firstStep || '—'}
 `
 writeFileSync(join(root, 'verdict.md'), verdictMd)
 
 // ── question.md ────────────────────────────────────────────────────────────
 writeFileSync(join(root, 'question.md'),
-  `# Вопрос\n\n## Исходная формулировка\n${r.question || '—'}\n\n## Фрейминг (с контекстом)\n${r.framed || '—'}\n`)
+  `# Question\n\n## Original phrasing\n${r.question || '—'}\n\n## Framing (with context)\n${r.framed || '—'}\n`)
 
 // ── advisors/NN-id.md ──────────────────────────────────────────────────────
 advisors.forEach((a, i) => {
@@ -85,13 +85,13 @@ advisors.forEach((a, i) => {
 reviews.forEach((rv, i) => {
   const md = `# Review ${p(i + 1)}
 
-**Сильнейший:** ${rv.strongest?.name || '—'}
+**Strongest:** ${rv.strongest?.name || '—'}
 ${rv.strongestWhy || ''}
 
-**Слепое пятно:** ${rv.blindSpot?.name || '—'}
+**Blind spot:** ${rv.blindSpot?.name || '—'}
 ${rv.blindSpotWhy || ''}
 
-**Все упустили:** ${rv.allMissed || '—'}
+**Everyone missed:** ${rv.allMissed || '—'}
 `
   writeFileSync(join(reviewsDir, `review-${p(i + 1)}.md`), md)
 })
@@ -99,45 +99,45 @@ ${rv.blindSpotWhy || ''}
 // ── tally.json ─────────────────────────────────────────────────────────────
 writeFileSync(join(root, 'tally.json'), JSON.stringify(r.tally || {}, null, 2) + '\n')
 
-// ── transcript.md (всё в одном файле) ──────────────────────────────────────
+// ── transcript.md (everything in one file) ─────────────────────────────────
 const transcript = [
-  `# Транскрипт совета — ${ts}`,
+  `# Council transcript — ${ts}`,
   ``,
-  `## Вопрос`,
+  `## Question`,
   r.question || '—',
   ``,
-  `## Фрейминг`,
+  `## Framing`,
   r.framed || '—',
   ``,
-  `## Ответы советников`,
+  `## Advisor answers`,
   ...advisors.map((a) => `\n### ${a.name || a.id}\n${a.response || '—'}`),
   ``,
-  `## Peer-ревью (деанонимизированные)`,
+  `## Peer reviews (de-anonymized)`,
   ...reviews.map((rv, i) =>
-    `\n### Review ${p(i + 1)}\n- Сильнейший: **${rv.strongest?.name || '—'}** — ${rv.strongestWhy || ''}\n- Слепое пятно: **${rv.blindSpot?.name || '—'}** — ${rv.blindSpotWhy || ''}\n- Все упустили: ${rv.allMissed || '—'}`),
+    `\n### Review ${p(i + 1)}\n- Strongest: **${rv.strongest?.name || '—'}** — ${rv.strongestWhy || ''}\n- Blind spot: **${rv.blindSpot?.name || '—'}** — ${rv.blindSpotWhy || ''}\n- Everyone missed: ${rv.allMissed || '—'}`),
   ``,
-  `## Подсчёт голосов «сильнейший»`,
+  `## "Strongest" vote count`,
   '```json',
   JSON.stringify(r.tally || {}, null, 2),
   '```',
   ``,
-  `## Вердикт Chairman`,
+  `## Chairman verdict`,
   verdictMd.split('\n').slice(1).join('\n').trim(),
   ``,
 ].join('\n')
 writeFileSync(join(root, 'transcript.md'), transcript)
 
-// ── README.md (индекс папки) ───────────────────────────────────────────────
+// ── README.md (folder index) ───────────────────────────────────────────────
 const readme = `# Council report — ${ts}
 
-**Вопрос:** ${(r.question || '').trim()}
+**Question:** ${(r.question || '').trim()}
 
-- [verdict.md](verdict.md) — итоговый вердикт Chairman
-- [question.md](question.md) — исходный вопрос + фрейминг
-- [transcript.md](transcript.md) — всё одним файлом
-- [tally.json](tally.json) — подсчёт голосов
-- advisors/ — ответы советников (${advisors.length})
-- reviews/ — peer-ревью (${reviews.length})
+- [verdict.md](verdict.md) — the chairman's final verdict
+- [question.md](question.md) — original question + framing
+- [transcript.md](transcript.md) — everything in one file
+- [tally.json](tally.json) — vote count
+- advisors/ — advisor answers (${advisors.length})
+- reviews/ — peer reviews (${reviews.length})
 `
 writeFileSync(join(root, 'README.md'), readme)
 
