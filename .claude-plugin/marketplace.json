@@ -1,0 +1,19 @@
+{
+  "name": "council-tools",
+  "owner": {
+    "name": "GeorgiySurkov"
+  },
+  "description": "Маркетплейс с плагином LLM Council.",
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "llm-council",
+      "source": "./llm-council",
+      "description": "5 советчиков-персон, слепое peer-ревью, синтез Chairman; отчёт по папкам.",
+      "category": "productivity",
+      "keywords": ["decision-making", "council", "multi-agent"]
+    }
+  ]
+}

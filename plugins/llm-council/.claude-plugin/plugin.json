@@ -1,0 +1,17 @@
+{
+  "name": "llm-council",
+  "displayName": "LLM Council",
+  "version": "0.1.0",
+  "description": "Прогон вопроса через 5 советчиков-персон со слепым peer-ревью и синтезом Chairman. Анонимизация/деанонимизация и подсчёт голосов — детерминированный JS внутри workflow; отчёт раскладывается в дерево папок.",
+  "author": {
+    "name": "GeorgiySurkov"
+  },
+  "license": "MIT",
+  "keywords": [
+    "decision-making",
+    "council",
+    "multi-agent",
+    "peer-review",
+    "workflow"
+  ]
+}
