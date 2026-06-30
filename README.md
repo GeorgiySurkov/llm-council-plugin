@@ -16,17 +16,17 @@ From inside Claude Code, with the slash commands:
 
 ```
 /plugin marketplace add GeorgiySurkov/llm-council-plugin
-/plugin install llm-council@council-tools
+/plugin install llm-council@llm-council-workflow
 ```
 
 Or from the CLI, with the same two steps — register the marketplace, then install the plugin from it:
 
 ```bash
-# Add this repo as a plugin marketplace (its name is "council-tools")
+# Add this repo as a plugin marketplace (its name is "llm-council-workflow")
 claude plugin marketplace add GeorgiySurkov/llm-council-plugin
 
 # Install the llm-council plugin from that marketplace
-claude plugin install llm-council@council-tools
+claude plugin install llm-council@llm-council-workflow
 ```
 
 `marketplace add` takes anything `git clone` understands, so a URL works too if you'd rather be explicit: `claude plugin marketplace add https://github.com/GeorgiySurkov/llm-council-plugin`. The `plugin@marketplace` form in the install step is what ties the plugin name to the marketplace you just added.
