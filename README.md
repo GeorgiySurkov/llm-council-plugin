@@ -22,10 +22,7 @@ From inside Claude Code, with the slash commands:
 Or from the CLI, with the same two steps — register the marketplace, then install the plugin from it:
 
 ```bash
-# Add this repo as a plugin marketplace (its name is "llm-council-workflow")
 claude plugin marketplace add GeorgiySurkov/llm-council-plugin
-
-# Install the llm-council plugin from that marketplace
 claude plugin install llm-council@llm-council-workflow
 ```
 
