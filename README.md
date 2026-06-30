@@ -12,16 +12,26 @@ Unlike other Claude Code ports of the idea, the council runs on a deterministic 
 
 ## Install
 
-From the marketplace:
+From inside Claude Code, with the slash commands:
 
 ```
 /plugin marketplace add GeorgiySurkov/llm-council-plugin
 /plugin install llm-council@council-tools
 ```
 
-(Or from the CLI: `claude plugin marketplace add ...`, then `claude plugin install ...`.)
+Or from the CLI, with the same two steps — register the marketplace, then install the plugin from it:
 
-Or run it without installing, from the repo root:
+```bash
+# Add this repo as a plugin marketplace (its name is "council-tools")
+claude plugin marketplace add GeorgiySurkov/llm-council-plugin
+
+# Install the llm-council plugin from that marketplace
+claude plugin install llm-council@council-tools
+```
+
+`marketplace add` takes anything `git clone` understands, so a URL works too if you'd rather be explicit: `claude plugin marketplace add https://github.com/GeorgiySurkov/llm-council-plugin`. The `plugin@marketplace` form in the install step is what ties the plugin name to the marketplace you just added.
+
+Or run it without installing at all, straight from a clone of the repo:
 
 ```bash
 claude --plugin-dir ./plugins/llm-council
